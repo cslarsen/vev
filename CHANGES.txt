@@ -1,1 +1,3 @@
-No changes yet.
+Since 0.0.2 and earlier:
+
+- Supports both Python 2 and 3.
