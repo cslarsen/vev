@@ -1,8 +1,9 @@
 vev — simple HTTP server request routing
 ========================================
 
-An *extremely* simple web routing scheme.  It's currently just a personal
-experiment.
+An *extremely* simple web routing scheme based on Python 3's ``http.server``
+module, vev makes it easy to quickly create simple web servers.  At this point,
+it's basically just an experiment.
 
 "Vev" is the Norwegian word for "web".
 
@@ -11,42 +12,19 @@ Example
 
 ::
 
-    from vev import Vev
-    import http.server
-    import urllib.parse
+    import vev
 
-    class HelloWorld(http.server.BaseHTTPRequestHandler):
-        def __init__(self, *args, **kw):
-            super().__init__(*args, **kw)
-
-        def do_GET(self):
-            self.log_message("GET %s", self.path)
-            url = urllib.parse.urlparse(self.path)
-            return Vev.dispatch(url.path, self)
-
-        @Vev.route("/")
+    class HelloWorld(vev.Server):
+        @vev.route("/")
         def index(self):
-            html = '<html><body>Go to <a href="/foo">foo</a>'
-            return Vev.send_html(self, html)
+            return "<html><body><a href='/foo'>Foo</a></body></html>"
 
-        @Vev.not_found()
-        def not_found(self):
-            self.send_error(404, "Not found: %s" % self.path)
-
-        @Vev.route("/foo")
+        @vev.route("/foo")
         def foo(self):
-            html = '<html><body>Go <a href="/">back</a></body></html>'
-            return Vev.send_html(self, html)
+            return "<html><body><a href='/'>Start</a></body></html>"
 
     if __name__ == "__main__":
-        try:
-            addr = ("0.0.0.0", 8080)
-            r = http.server.HTTPServer(addr, HelloWorld)
-            print("Serving from %s:%s" % (addr[0], addr[1]))
-            r.serve_forever()
-        except KeyboardInterrupt:
-            r.server_close()
-
+        vev.serve(("0.0.0.0", 8080), HelloWorld)
 
 License
 -------

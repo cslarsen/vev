@@ -1,4 +1,4 @@
-from vev import Vev
+from vev import Route
 import unittest
 
 class TestVev(unittest.TestCase):
@@ -11,13 +11,13 @@ class TestVev(unittest.TestCase):
         pass
 
     def test_route(self):
-        self.assertNotIn("/foobar", Vev.routes)
+        self.assertNotIn("/foobar", Route.routes)
 
-        @Vev.route("/foobar")
+        @Route.bind("/foobar")
         def myroute(foo):
             return 123
 
-        self.assertIn("/foobar", Vev.routes)
+        self.assertIn("/foobar", Route.routes)
 
 if __name__ == "__main__":
     unittest.main()
