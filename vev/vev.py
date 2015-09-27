@@ -9,8 +9,13 @@ Distributed under the LGPL 2.1. You are allowed to change the license on a
 particular copy to the LGPL 3.0, the GPL 2.0 or the GPL 3.0.
 """
 
-import http.server
+import sys
 import urllib
+
+if sys.version.startswith("2."):
+    from .server_py2 import BaseServer, HTTPServer, urllib_urlparse
+else:
+    from .server_py3 import BaseServer, HTTPServer, urllib_urlparse
 
 
 class Route:
@@ -57,20 +62,24 @@ class Route:
         obj.send_response(200)
         obj.send_header("Content-type", "text/html; charset=%s" % encoding)
         obj.end_headers()
-        obj.wfile.write(bytes(result, encoding=encoding))
+        if sys.version.startswith("2."):
+            obj.wfile.write(bytes(result.encode(encoding)))
+        else:
+            obj.wfile.write(bytes(result, encoding=encoding))
 
 
-class Server(http.server.BaseHTTPRequestHandler):
-    def __init__(self, *args, **kw):
-        super().__init__(*args, **kw)
-
+class Server(BaseServer):
+    """
+    A simple HTTP server.
+    """
     def do_GET(self):
-        url = urllib.parse.urlparse(self.path)
+        url = urllib_urlparse(self.path)
         return Route.dispatch(url.path, self)
+
 
 def serve(addr_port, Class):
     addr, port = addr_port
-    r = http.server.HTTPServer((addr, port), Class)
+    r = HTTPServer((addr, port), Class)
     print("Serving from %s:%s" % (addr, port))
     r.serve_forever()
 

@@ -1,9 +1,11 @@
 vev — simple HTTP server request routing
 ========================================
 
-An *extremely* simple web routing scheme based on Python 3's ``http.server``
-module, vev makes it easy to quickly create simple web servers.  At this point,
-it's basically just an experiment.
+An *extremely* simple web routing scheme based on Python's default web server
+modules, vev makes it easy to quickly create simple web servers.  At this
+point, it's basically just an experiment.
+
+It works both for Python 2 and 3.
 
 "Vev" is the Norwegian word for "web".
 
